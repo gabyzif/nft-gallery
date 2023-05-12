@@ -1,6 +1,7 @@
 import Container from '@/components/Container/Container';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
+import CardContainer from '@/components/Cards/CardContainer';
 
 const SearchBar = dynamic(() => import('../components/Search/SearchBar'), {
   ssr: false
@@ -26,6 +27,7 @@ export default function Home({ data }) {
             <SearchBar />
           </div>
         </div>
+        <CardContainer />
       </Container>
     </main>
   );

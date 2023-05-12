@@ -16,7 +16,7 @@ const SearchBar = () => {
   return (
     <form onSubmit={handleSubmit}>
       <input
-        className="flex-1 px-4 py-2 w-full h-14 rounded-xl border-0 outline-none bg-secondary-dark"
+        className="flex-1 px-4 py-2 w-full h-14  text-white rounded-xl border-0 outline-none bg-secondary-dark"
         type="text"
         value={query}
         placeholder="Search an NFT"
