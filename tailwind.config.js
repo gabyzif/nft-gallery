@@ -3,16 +3,31 @@ module.exports = {
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/app/**/*.{js,ts,jsx,tsx,mdx}'
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+      fontFamily: {
+        body: ["'Fira Sans Extra Condensed', sans-serif;"],
+        play: ['Play, sans-serif;']
       },
-    },
+      colors: {
+        primary: {
+          regular: '#5442ba',
+          dark: 'rgba(25, 28, 31)'
+        },
+        secondary: {
+          regular: '#44e1a4',
+          dark: '#232528'
+        },
+        tertiary: {
+          regular: '#f56032'
+        }
+      },
+      height: {
+        'screen-3/4': '90vh'
+      }
+    }
   },
-  plugins: [],
-}
+  plugins: []
+};
