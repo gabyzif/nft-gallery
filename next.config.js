@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {
-    STRAPI_URL: process.env.API_URL
+    API_URL: process.env.API_URL
   },
   images: {
     remotePatterns: [
