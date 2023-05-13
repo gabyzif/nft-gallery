@@ -20,21 +20,6 @@ const CardContainer = () => {
   const isRefreshing = isValidating && data && data.length === size;
 
   const containerRef = useRef(null);
-  useEffect(() => {
-    const handleScroll = () => {
-      if (containerRef.current) {
-        const container = containerRef.current;
-        const scrollHeight = container.scrollHeight - container.clientHeight;
-        const scrollTop = container.scrollTop;
-        const scrollBottom = scrollHeight - scrollTop;
-        if (scrollBottom < 100 && !isLoadingMore && !isReachingEnd) {
-          setSize((size) => size + 1);
-        }
-      }
-    };
-    containerRef.current?.addEventListener('scroll', handleScroll);
-    return () => containerRef.current?.removeEventListener('scroll', handleScroll);
-  }, [isLoadingMore, isReachingEnd, setSize]);
 
   return (
     <div className="card-container grid md:gap-3 md:grid-cols-4" ref={containerRef}>
@@ -45,6 +30,13 @@ const CardContainer = () => {
 
       {isLoadingMore && <div>Loading...</div>}
       {isReachingEnd && <div>End of results</div>}
+      <button
+        onClick={() => {
+          setSize(5);
+        }}
+      >
+        load issues
+      </button>
     </div>
   );
 };
