@@ -12,14 +12,23 @@ const CardContainer = () => {
   );
   const nfts = data ? [].concat(...data) : [];
 
-  console.log(nfts);
-
   const isLoadingMore = isLoading || (size > 0 && data && typeof data[size - 1] === 'undefined');
   const isEmpty = data?.[0]?.length === 0;
   const isReachingEnd = isEmpty || (data && data[data.length - 1]?.length < 20);
   const isRefreshing = isValidating && data && data.length === size;
 
   const containerRef = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (containerRef.current && containerRef.current.getBoundingClientRect().bottom <= window.innerHeight) {
+        setSize(size + 1);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [setSize, size]);
 
   return (
     <div className="card-container grid md:gap-3 md:grid-cols-4" ref={containerRef}>
@@ -30,13 +39,6 @@ const CardContainer = () => {
 
       {isLoadingMore && <div>Loading...</div>}
       {isReachingEnd && <div>End of results</div>}
-      <button
-        onClick={() => {
-          setSize(5);
-        }}
-      >
-        load issues
-      </button>
     </div>
   );
 };
