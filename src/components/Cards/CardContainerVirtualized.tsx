@@ -36,7 +36,7 @@ const App = () => {
   };
 
   return (
-    <div className="h-full  bg-violet-950">
+    <div className="h-full rounded-xl bg-primary-regular  bg-opacity-50 ">
       <AutoSizer>
         {({ height, width }) => (
           <Grid

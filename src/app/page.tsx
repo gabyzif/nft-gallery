@@ -34,7 +34,9 @@ export default function Home({ data }) {
         <div>
           <button
             onClick={() => setVirtualized(!virtualized)}
-            className="flex justify-center items-center rounded-lg text-white bg-primary-regular w-full p-4 h-10"
+            className={`flex justify-center items-center my-2 rounded-lg  ${
+              virtualized ? 'bg-secondary-regular' : 'bg-primary-regular text-white'
+            } w-full p-4 h-10`}
           >
             {virtualized ? 'Static Grid' : 'Virtualize Grid'}
           </button>
