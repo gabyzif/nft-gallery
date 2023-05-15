@@ -1,12 +1,39 @@
 'use client';
-import React, { useState, useEffect, useMemo } from 'react';
-import { AutoSizer, Grid } from 'react-virtualized';
+import React, { useState, useEffect, useMemo, CSSProperties } from 'react';
+import { AutoSizer, Grid, ListRowProps } from 'react-virtualized';
 import Card from './Card';
 import SearchBar from '../Search/SearchBar';
 
 const PAGE_SIZE = 20;
+interface CardContainerVirtualizedProps {}
+interface CellRendererParams {
+  columnIndex: number;
+  key: string;
+  rowIndex: number;
+  style: CSSProperties;
+}
 
-const cellRenderer = ({ columnIndex, key, rowIndex, style, nfts }) => {
+interface ScrollParams {
+  clientHeight: number;
+  scrollHeight: number;
+  scrollTop: number;
+}
+
+interface NFT {
+  title: string;
+  price: string | number;
+  img: string;
+}
+
+interface CellRendererProps {
+  columnIndex: number;
+  key: string;
+  rowIndex: number;
+  style: CSSProperties;
+  nfts: NFT[];
+}
+
+const cellRenderer = ({ columnIndex, key, rowIndex, style, nfts }: CellRendererProps) => {
   const index = rowIndex * 4 + columnIndex;
   if (index >= nfts.length || !nfts[index]) {
     return null;
@@ -21,7 +48,7 @@ const cellRenderer = ({ columnIndex, key, rowIndex, style, nfts }) => {
   );
 };
 
-const VirtualizedGrid = () => {
+const CardContainerVirtualized: React.FC<CardContainerVirtualizedProps> = () => {
   const [nfts, setNfts] = useState([]);
   const [searchString, setSearchString] = useState('');
   const [offset, setOffset] = useState(0);
@@ -45,8 +72,6 @@ const VirtualizedGrid = () => {
   }, [offset]);
 
   const filteredNfts = useMemo(() => {
-    console.log({ nfts, searchString });
-
     if (searchString === '') {
       return nfts;
     }
@@ -56,11 +81,19 @@ const VirtualizedGrid = () => {
       : [];
   }, [nfts, searchString]);
 
-  const handleSearch = (event) => {
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchString(event.target.value);
   };
 
-  const handleScroll = ({ clientHeight, scrollHeight, scrollTop }) => {
+  const handleScroll = ({
+    clientHeight,
+    scrollHeight,
+    scrollTop
+  }: {
+    clientHeight: number;
+    scrollHeight: number;
+    scrollTop: number;
+  }) => {
     if (clientHeight + scrollTop >= scrollHeight) {
       setOffset((prevOffset) => prevOffset + PAGE_SIZE);
     }
@@ -72,7 +105,7 @@ const VirtualizedGrid = () => {
         <SearchBar value={searchString} onChange={handleSearch} placeholder="Search NFTs" />
       </div>
       <AutoSizer>
-        {({ height, width }) => (
+        {({ height, width }: { height: number; width: number }) => (
           <Grid
             columnCount={4}
             columnWidth={width / 4}
@@ -80,10 +113,10 @@ const VirtualizedGrid = () => {
             rowCount={Math.ceil(filteredNfts.length / 4) || 1}
             rowHeight={300}
             width={width}
-            onScroll={({ clientHeight, scrollHeight, scrollTop }) =>
+            onScroll={({ clientHeight, scrollHeight, scrollTop }: ScrollParams) =>
               handleScroll({ clientHeight, scrollHeight, scrollTop })
             }
-            cellRenderer={({ columnIndex, key, rowIndex, style }) =>
+            cellRenderer={({ columnIndex, key, rowIndex, style }: CellRendererParams) =>
               cellRenderer({ columnIndex, key, rowIndex, style, nfts: filteredNfts })
             }
           />
@@ -93,4 +126,4 @@ const VirtualizedGrid = () => {
   );
 };
 
-export default VirtualizedGrid;
+export default CardContainerVirtualized;

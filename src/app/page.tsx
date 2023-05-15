@@ -1,17 +1,11 @@
 'use client';
 import Container from '@/components/Container/Container';
-import Image from 'next/image';
-import dynamic from 'next/dynamic';
 import CardContainer from '@/components/Cards/CardContainer';
 import CardContainerVirtualized from '@/components/Cards/CardContainerVirtualized';
 import { useState } from 'react';
 
-const SearchBar = dynamic(() => import('../components/Search/SearchBar'), {
-  ssr: false
-});
-
-export default function Home({ data }) {
-  const [virtualized, setVirtualized] = useState(false);
+export default function Home(): JSX.Element {
+  const [virtualized, setVirtualized] = useState<boolean>(false);
   return (
     <main className="center">
       <Container width="90%">
