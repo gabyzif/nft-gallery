@@ -6,15 +6,14 @@ interface CardProps {
   price: number;
   title: string;
   imageSrc: string;
-  key: string;
+  key?: string;
 }
 
 const Card: FC<CardProps> = ({ price, title, imageSrc, key }) => {
-  console.log(imageSrc);
   return (
     <div
       key={key}
-      className="border rounded-2xl p-[8px] flex flex-col overflow-hidden border-secondary-dark relative h-[240px] group transition-transform transform  duration-500"
+      className=" border rounded-2xl p-[8px] flex flex-col overflow-hidden border-secondary-dark relative h-[240px] group transition-transform transform  duration-500"
     >
       <div className="h-2/3 w-full relative">
         <Image
