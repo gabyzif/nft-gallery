@@ -57,7 +57,8 @@ const CardContainerVirtualized: React.FC<CardContainerVirtualizedProps> = () => 
     const fetchNfts = async () => {
       try {
         const response = await fetch(
-          `https://api-mainnet.magiceden.io/idxv2/getListedNftsByCollectionSymbol?collectionSymbol=okay_bears&limit=${PAGE_SIZE}&offset=${offset}`
+          `https://api-mainnet.magiceden.io/idxv2/getListedNftsByCollectionSymbol?collectionSymbol=okay_bears&limit=${PAGE_SIZE}&offset=${offset}`,
+          { mode: 'no-cors' }
         );
         const data = await response.json();
         setNfts((prevNfts) => [...prevNfts, ...data.results]);
