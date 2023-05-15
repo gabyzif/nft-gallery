@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect, useMemo, CSSProperties } from 'react';
-import { AutoSizer, Grid, ListRowProps } from 'react-virtualized';
+import { AutoSizer, Grid } from 'react-virtualized';
 import Card from './Card';
 import SearchBar from '../Search/SearchBar';
 

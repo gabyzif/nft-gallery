@@ -1,13 +1,17 @@
-'use client';
 import { useEffect, useRef } from 'react';
 import Card from './Card';
 import useSWRInfinite from 'swr/infinite';
-import { FixedSizeGrid as Grid } from 'react-window';
+
+interface NftData {
+  title: string;
+  price: number;
+  img: string;
+}
 
 const CardContainer = () => {
-  const fetcher = (url) => fetch(url).then((res) => res.json());
+  const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-  const { data, mutate, size, setSize, isValidating, isLoading } = useSWRInfinite(
+  const { data, mutate, size, setSize, isValidating, isLoading } = useSWRInfinite<NftData[]>(
     (index) => `${process.env.API_URL}&limit=20&offset=${index * 20}`,
     fetcher
   );
@@ -18,7 +22,7 @@ const CardContainer = () => {
   const isReachingEnd = isEmpty || (data && data[data.length - 1]?.length < 20);
   const isRefreshing = isValidating && data && data.length === size;
 
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,19 +34,20 @@ const CardContainer = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [setSize, size]);
+
   return (
     <>
       <div className="card-container grid md:gap-3 md:grid-cols-4" ref={containerRef}>
         {nfts.length > 0 &&
-          nfts.map(({ results }) =>
-            results.map((r) => <Card key={r.title} price={r.price} title={r.title} imageSrc={r.img} />)
-          )}
+          nfts.map(({ title, price, img }) => (
+            <Card key={title} price={price} title={title} imageSrc={img} />
+          ))}
       </div>
       {isLoadingMore ? (
         <div className="flex my-10 justify-center">
           <button
             type="button"
-            className="flex items-center rounded-lg bg-tertiary-regular p-4  text-white"
+            className="flex items-center rounded-lg bg-tertiary-regular p-4 text-white"
             disabled
           >
             <svg
@@ -57,7 +62,7 @@ const CardContainer = () => {
                 cy="12"
                 r="10"
                 stroke="currentColor"
-                stroke-width="4"
+                strokeWidth={4}
               ></circle>
               <path
                 className="opacity-75"
