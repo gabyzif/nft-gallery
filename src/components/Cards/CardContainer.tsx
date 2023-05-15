@@ -35,7 +35,7 @@ const CardContainer = () => {
       <div className="card-container grid md:gap-3 md:grid-cols-4" ref={containerRef}>
         {nfts.length > 0 &&
           nfts.map(({ results }) =>
-            results.map((r) => <Card key={r.name} price={r.price} title={r.title} imageSrc={r.img} />)
+            results.map((r) => <Card key={r.title} price={r.price} title={r.title} imageSrc={r.img} />)
           )}
       </div>
       {isLoadingMore ? (

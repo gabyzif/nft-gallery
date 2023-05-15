@@ -1,53 +1,85 @@
-import { useState, useEffect } from 'react';
+'use client';
+import React, { useState, useEffect, useMemo } from 'react';
 import { AutoSizer, Grid } from 'react-virtualized';
 import Card from './Card';
+import SearchBar from '../Search/SearchBar';
 
-const App = () => {
+const PAGE_SIZE = 20;
+
+const cellRenderer = ({ columnIndex, key, rowIndex, style, nfts }) => {
+  const index = rowIndex * 4 + columnIndex;
+  if (index >= nfts.length || !nfts[index]) {
+    return null;
+  }
+
+  const { title, price, img } = nfts[index];
+
+  return (
+    <div key={key} style={style}>
+      <Card price={price} title={title} imageSrc={img} />
+    </div>
+  );
+};
+
+const VirtualizedGrid = () => {
   const [nfts, setNfts] = useState([]);
+  const [searchString, setSearchString] = useState('');
   const [offset, setOffset] = useState(0);
 
   useEffect(() => {
     const fetchNfts = async () => {
       const response = await fetch(
-        `https://api-mainnet.magiceden.io/idxv2/getListedNftsByCollectionSymbol?collectionSymbol=okay_bears&limit=20&offset=${offset}`
+        `https://api-mainnet.magiceden.io/idxv2/getListedNftsByCollectionSymbol?collectionSymbol=okay_bears&limit=${PAGE_SIZE}&offset=${offset}`
       );
       const data = await response.json();
       setNfts((prevNfts) => [...prevNfts, ...data.results]);
     };
+
     fetchNfts();
   }, [offset]);
 
-  const isSmallScreen = window.innerWidth < 768;
+  const filteredNfts = useMemo(() => {
+    console.log({ nfts, searchString });
 
-  const cellRenderer = ({ columnIndex, key, rowIndex, style }) => {
-    const index = rowIndex * 4 + columnIndex;
-    const nft = nfts[index];
-    return (
-      <div key={key} style={style} className="p-3">
-        {nft && <Card price={nft.price} title={nft.name} imageSrc={nft.img} key={nft.id} />}
-      </div>
-    );
+    if (searchString === '') {
+      return nfts;
+    }
+
+    return nfts.length > 0
+      ? nfts.filter((nft) => nft.title.toLowerCase().includes(searchString.toLowerCase()))
+      : [];
+  }, [nfts, searchString]);
+
+  const handleSearch = (event) => {
+    setSearchString(event.target.value);
   };
 
-  const handleOnScroll = ({ clientHeight, scrollHeight, scrollTop }) => {
-    if (scrollHeight - (clientHeight + scrollTop) < 100) {
-      setOffset((prevOffset) => prevOffset + 20);
+  const handleScroll = ({ clientHeight, scrollHeight, scrollTop }) => {
+    if (clientHeight + scrollTop >= scrollHeight) {
+      setOffset((prevOffset) => prevOffset + PAGE_SIZE);
     }
   };
 
   return (
-    <div className="h-full rounded-xl bg-primary-regular  bg-opacity-50 ">
+    <div style={{ height: '100vh' }}>
+      <div className="fixed  rounded-xl z-50 top-20  ">
+        <SearchBar value={searchString} onChange={handleSearch} placeholder="Search NFTs" />
+      </div>
       <AutoSizer>
         {({ height, width }) => (
           <Grid
-            columnCount={isSmallScreen ? 1 : 4}
-            columnWidth={isSmallScreen ? width : width / 4}
+            columnCount={4}
+            columnWidth={width / 4}
             height={height}
-            rowCount={Math.ceil(nfts.length / 4)}
-            rowHeight={270}
+            rowCount={Math.ceil(filteredNfts.length / 4) || 1}
+            rowHeight={300}
             width={width}
-            cellRenderer={cellRenderer}
-            onScroll={handleOnScroll}
+            onScroll={({ clientHeight, scrollHeight, scrollTop }) =>
+              handleScroll({ clientHeight, scrollHeight, scrollTop })
+            }
+            cellRenderer={({ columnIndex, key, rowIndex, style }) =>
+              cellRenderer({ columnIndex, key, rowIndex, style, nfts: filteredNfts })
+            }
           />
         )}
       </AutoSizer>
@@ -55,4 +87,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default VirtualizedGrid;
